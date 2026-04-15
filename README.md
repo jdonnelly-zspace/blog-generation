@@ -4,12 +4,22 @@ Claude Code workflow for writing and publishing SEO-optimized blogs to the zSpac
 
 ## Quick Start
 
-1. **Clone this repo and open it in [Claude Code](https://claude.ai/claude-code).**
+1. **Clone this repo and open the project directory in [Claude Code](https://claude.ai/claude-code).** The skill lives in `.claude/skills/zspace-blog/` and is only picked up when your working directory is this repo root — always `cd` here before running `/blog`.
 2. **Get your API tokens** — see [For Team Members](#for-team-members) below.
 3. **Copy `.env.example` to `.env`** and paste in the tokens.
 4. **Ask Claude to write a blog** — say `/blog` or `"write a blog post about [topic]"`.
 5. Claude runs discovery → SEO plan → HTML writing → review PDF → link validation → Directus publish (as a draft).
 6. Review the Directus admin URL Claude provides and flip the post to `published` when ready.
+
+## Staying in Sync with the Team
+
+The skill, guidelines, and reference drafts all live in this repo. Every time you run `/blog`, the skill runs a **pre-flight check** that compares your local copy to `origin/main`:
+
+- **Behind with a clean working tree** → Claude offers to `git pull --ff-only` before writing, so you get the latest guidelines and skill version.
+- **Behind with uncommitted changes** → Claude warns you and continues with your current version. Resolve your changes and pull when ready.
+- **Up to date** → continues silently.
+
+This means you only need to clone the repo once. Pulls happen on demand when drift is detected. If you want to force an update, just run `git pull` before `/blog`.
 
 ## For Team Members
 

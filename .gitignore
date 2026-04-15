@@ -4,7 +4,8 @@
 .DS_Store
 
 # Claude Code local settings (may contain command history with secrets)
-.claude/
+.claude/settings.local.json
+.claude/*.local
 
 # Training data symlink (private)
 reference/
