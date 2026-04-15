@@ -6,10 +6,46 @@ Claude Code workflow for writing and publishing SEO-optimized blogs to the zSpac
 
 1. **Clone this repo and open the project directory in [Claude Code](https://claude.ai/claude-code).** The skill lives in `.claude/skills/zspace-blog/` and is only picked up when your working directory is this repo root — always `cd` here before running `/blog`.
 2. **Get your API tokens** — see [For Team Members](#for-team-members) below.
-3. **Copy `.env.example` to `.env`** and paste in the tokens.
+3. **Create your local `.env` file** (details below).
 4. **Ask Claude to write a blog** — say `/blog` or `"write a blog post about [topic]"`.
 5. Claude runs discovery → SEO plan → HTML writing → review PDF → link validation → Directus publish (as a draft).
 6. Review the Directus admin URL Claude provides and flip the post to `published` when ready.
+
+### Creating your local `.env` file
+
+The `.env` file holds your personal API tokens. It **lives only on your computer**, never in the repo. It's already listed in `.gitignore`, so git will refuse to commit it — but don't try to force it.
+
+**Where it goes:** the project root, right next to `.env.example`, `README.md`, and `CLAUDE.md`. Same folder.
+
+**Option A — Terminal (fastest):**
+
+```bash
+cd path/to/blog-generation   # wherever you cloned the repo
+cp .env.example .env         # makes a local copy
+open -e .env                 # opens it in TextEdit (Mac)
+# or use your editor of choice: code .env  /  nano .env  /  vim .env
+```
+
+**Option B — Finder / File Explorer:**
+
+1. In Finder, navigate to the cloned `blog-generation` folder.
+2. Enable "Show Hidden Files" (on Mac: `Cmd+Shift+.`).
+3. Right-click `.env.example` → Duplicate, then rename the copy from `.env.example copy` to `.env`.
+4. Open `.env` in TextEdit or your editor.
+
+**What to paste in:** JP will send you two tokens. Put each on the line that already ends in `=`:
+
+```
+DIRECTUS_TOKEN_SANDBOX=paste-the-sandbox-token-here
+DIRECTUS_TOKEN_PRODUCTION=paste-the-production-token-here
+```
+
+Leave the URL lines alone (already correct), leave `DIRECTUS_ENV=sandbox` for your first run, save the file, and you're done. No spaces around `=`, no quotes around the token.
+
+**Quick check:**
+```bash
+cat .env | grep TOKEN        # should show both token lines, each with a value
+```
 
 ## Staying in Sync with the Team
 
