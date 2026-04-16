@@ -33,7 +33,7 @@ open -e .env                 # opens it in TextEdit (Mac)
 3. Right-click `.env.example` → Duplicate, then rename the copy from `.env.example copy` to `.env`.
 4. Open `.env` in TextEdit or your editor.
 
-**What to paste in:** JP will send you two tokens. Put each on the line that already ends in `=`:
+**What to paste in:** JP (or the setup script) will give you two tokens. Put each on the line that already ends in `=`:
 
 ```
 DIRECTUS_TOKEN_SANDBOX=paste-the-sandbox-token-here
@@ -59,13 +59,17 @@ This means you only need to clone the repo once. Pulls happen on demand when dri
 
 ## For Team Members
 
-### Getting your API tokens
+### Getting your API token
 
-The workflow needs two Directus API tokens — one for the sandbox (testing), one for production (live site). **Request them from JP Donnelly (jdonnelly@zspace.com).** Ask for:
+Each team member gets their own personal Directus user with the "Blog Writer" policy attached. This means `user_created` in Directus reflects who actually published the post.
 
-> "Blog-writer API tokens for Sandbox1 and Production."
+**To get your account**, ask JP Donnelly (jdonnelly@zspace.com) — or, if you have admin access, run:
 
-These are scoped tokens with create/update rights on `mkt_blog` and the category junction table. They are NOT admin tokens. Tokens are **per-user** — don't share yours, and always request your own.
+```bash
+node scripts/setup_roles.js --add-user YOUR_EMAIL --policies blog
+```
+
+JP (or the setup script) will give you a token for each environment. These are scoped tokens with create/update rights on `mkt_blog` and the category junction table — NOT admin tokens. Tokens are **per-person** — don't share yours.
 
 ### Which environment does what
 
@@ -81,7 +85,7 @@ Switch environments by changing `DIRECTUS_ENV` in `.env`.
 ```bash
 cd Blog\ Generation
 cp .env.example .env
-# open .env and paste in the tokens JP sent you
+# open .env and paste in your personal tokens
 # confirm DIRECTUS_ENV=sandbox for your first run
 ```
 
@@ -94,7 +98,29 @@ Then open the project in Claude Code and say: `write a blog post about [your top
 - Paste a token into chat, issues, or Slack threads.
 - Push `.env` to any remote.
 
-If a token is exposed, tell JP immediately so it can be rotated.
+If a token is exposed, tell JP immediately so the user can be disabled and a new token issued. When a team member leaves the project, disable their Directus user to revoke access.
+
+## For Admins
+
+If you manage blog API users and policies, you'll need admin tokens in addition to your personal token.
+
+### Setup
+
+```bash
+cp .env.admin.example .env     # includes admin token fields
+# Fill in your personal + admin tokens, then:
+
+# One-time: create the Blog Writer policy and API Tools User role
+node scripts/setup_roles.js
+
+# Add a team member
+node scripts/setup_roles.js --add-user name@zspace.com --policies blog
+
+# List all blog API users
+node scripts/setup_roles.js --list-users
+```
+
+See [`guidelines/api-users-and-tokens.md`](guidelines/api-users-and-tokens.md) for permission details and the full user management workflow.
 
 ## Editing the Rules
 
@@ -105,6 +131,7 @@ All blog-writing rules live in editable markdown files. Change them to evolve vo
 | [`guidelines/voice-and-style.md`](guidelines/voice-and-style.md) | Persona, tone, audience, canonical zSpace URLs |
 | [`guidelines/writing-rules.md`](guidelines/writing-rules.md) | SEO, HTML structure, link validation |
 | [`guidelines/directus-schema.md`](guidelines/directus-schema.md) | Directus fields, category IDs, API shape |
+| [`guidelines/api-users-and-tokens.md`](guidelines/api-users-and-tokens.md) | API access, tokens, permissions |
 
 Changes take effect the next time Claude writes a blog.
 

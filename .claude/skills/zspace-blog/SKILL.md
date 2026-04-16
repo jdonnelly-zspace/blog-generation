@@ -46,7 +46,7 @@ Degrade gracefully — if `.git` is missing, there's no upstream configured, or 
 
 ## Setup
 
-1. Read `.env` to confirm credentials. If missing, tell the user to copy `.env.example` to `.env` and add tokens.
+1. Read `.env` to confirm your personal API token is set. If missing, tell the user to copy `.env.example` to `.env` and add their token (see `guidelines/api-users-and-tokens.md`).
 2. Note the active `DIRECTUS_ENV` and confirm with the user which environment to publish to.
 
 ## Load Guidelines
@@ -167,7 +167,7 @@ Blog Post Created
 
 ## Error Handling
 
-- `.env` missing or token empty → guide the user through setup.
+- `.env` missing or token empty → guide the user through setup (see `.env.example` and `guidelines/api-users-and-tokens.md`).
 - Directus API error → show the error, suggest fixes.
 - Unknown category ID → create without categories and flag the gap.
 - Pre-flight check fails → continue silently; don't block on it.

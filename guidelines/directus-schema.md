@@ -12,7 +12,7 @@
 | `display_date` | dateTime | no | Display date for the post. |
 | `status` | string | yes | `draft` or `published`. |
 | `featured_image` | uuid (file) | no | Directus file UUID. CDN URL: `https://cdn.zspace.com/assets/{uuid}`. |
-| `user_created` | string | auto | Tracks authorship (no separate `author` field). |
+| `user_created` | string | auto | Tracks authorship (no separate `author` field). Each team member's personal API token means this reflects the actual person who published the post. |
 
 **Categories:** M2M via junction table `mkt_blog_mkt_blog_categories`. Must be linked via a separate POST **after** creating the blog post.
 
@@ -50,9 +50,13 @@
 
 `{DIRECTUS_URL}/admin/content/mkt_blog/{id}`
 
+## API Access
+
+Each team member uses their own personal API token (per-person model). Tokens carry the "Blog Writer" policy. See `guidelines/api-users-and-tokens.md` for token setup, permissions, and user management.
+
 ## Environments
 
-`.env` → `DIRECTUS_ENV=sandbox` or `production`. Add `DIRECTUS_URL_<NAME>` + `DIRECTUS_TOKEN_<NAME>` for new environments.
+`.env` → `DIRECTUS_ENV=sandbox` or `production`. Add `DIRECTUS_URL_<NAME>` + `DIRECTUS_TOKEN_<NAME>` for new environments. Tokens are per-person — each team member has their own.
 
 - Canonical zSpace URLs for blog content → `voice-and-style.md` (Canonical URLs table).
 - Writing and link rules → `writing-rules.md`.
