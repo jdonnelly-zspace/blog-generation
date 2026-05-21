@@ -51,7 +51,9 @@ Open Claude Code from **any folder** (you don't need to be in the project folder
 /blog
 ```
 
-Claude will ask about your topic, propose an SEO plan, write the post, generate a review PDF, validate every link, and publish to Directus as a **draft**. You then review in Directus and flip to **published** when ready.
+Claude will ask about your topic, propose an SEO plan, write the post, generate a review PDF, validate every link, and publish to Directus as **published** with today's date. When it's done it hands you the public blog URL.
+
+Want a draft or a future publish date instead? Just tell Claude — e.g. *"keep it as a draft"* or *"set the publish date to next Tuesday"* — and it'll update Directus for you.
 
 ## When something changes
 

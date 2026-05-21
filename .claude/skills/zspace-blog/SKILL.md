@@ -114,7 +114,7 @@ After confirmation, produce the blog post following the loaded guidelines:
 
 Save two files under `${PROJECT_ROOT}/drafts/`:
 - `${PROJECT_ROOT}/drafts/[slug].html` — the HTML content.
-- `${PROJECT_ROOT}/drafts/[slug].json` — metadata:
+- `${PROJECT_ROOT}/drafts/[slug].json` — metadata. Default `status` to `published` and `display_date` to **today** at 12:00 UTC (ISO 8601). Override only if the writer explicitly asked for a draft or a different date:
   ```json
   {
     "title": "...",
@@ -123,8 +123,8 @@ Save two files under `${PROJECT_ROOT}/drafts/`:
     "primary_keyword": "...",
     "secondary_keywords": ["..."],
     "category_id": 1,
-    "display_date": "2026-04-15T12:00:00.000Z",
-    "status": "draft"
+    "display_date": "2026-05-21T12:00:00.000Z",
+    "status": "published"
   }
   ```
 
@@ -146,29 +146,37 @@ Present the full output to the user, then:
 - For each external URL: HTTP status check. If 403 from Cloudflare, open in a browser to confirm before calling it broken.
 - Update both the HTML draft file AND the content to be sent to Directus if any link changes.
 
-Then ask: "Ready to publish to Directus as a draft? Or revisions?" Only proceed on explicit approval.
+Then ask: "Ready to publish to Directus as **published** with today's date? Or revisions? (You can also ask me to keep it as a draft or pick a future publish date.)" Only proceed on explicit approval.
 
 ### PHASE 5: Publish
 
 Use Python to read `${PROJECT_ROOT}/.env`, POST to Directus, and link categories. Use `urllib` (no external deps needed).
 
-1. **POST** `/items/mkt_blog` with title, slug, content, excerpt, status=`draft`, display_date.
+1. **POST** `/items/mkt_blog` with title, slug, content, excerpt, status=`published` (the default — use `draft` only if the writer asked), display_date=today (use the writer's date if they specified one).
 2. **POST** `/items/mkt_blog_mkt_blog_categories` with `{ mkt_blog_id, mkt_blog_categories_id }`. Category IDs: 1=Immersive Learning, 4=STEM, 5=CTE.
 3. **Verify Directus did not rewrite the slug or status.** GET the record back and check:
    - `slug` matches what you submitted. If Directus auto-generated a title-based slug, PATCH it back to the SEO-optimized one.
-   - `status` is still `draft`. If it flipped to `published`, PATCH back to `draft` unless the user asked for immediate publish.
+   - `status` matches what you submitted. If a Flow demoted `published` → `draft`, PATCH back to `published` (unless the writer asked for draft). If a Flow promoted `draft` → `published` and the writer wanted draft, PATCH back to `draft`.
    - Flag any mismatch to the user.
-4. **Report the admin URL:** `{DIRECTUS_URL}/admin/content/mkt_blog/{id}`.
+4. **Report both URLs:**
+   - Public URL: `https://blog.zspace.com/{slug}`
+   - Admin URL: `{DIRECTUS_URL}/admin/content/mkt_blog/{id}`
 
 Completion summary:
 ```
 Blog Post Created
 - Title: [title]
 - Directus ID: [id]
-- Status: draft
+- Status: [published|draft]
+- Display Date: [YYYY-MM-DD]
 - Category: [category]
-- Admin URL: [url]
+- Public URL: https://blog.zspace.com/[slug]
+- Admin URL:  [admin url]
 ```
+
+Then add a one-line nudge so the writer knows they can change the result conversationally:
+
+> If you'd like to keep this as a draft or set a future publish date, just tell me — e.g. *"change it to a draft"* or *"set the publish date to next Tuesday"* — and I'll update Directus.
 
 ---
 

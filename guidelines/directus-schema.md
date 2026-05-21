@@ -25,15 +25,15 @@
 
 ## Creating a Blog Post
 
-1. **POST** `/items/mkt_blog` (no categories in body):
+1. **POST** `/items/mkt_blog` (no categories in body). Default `status` to `published` and `display_date` to today; only use `draft` or a future date when the writer asks:
    ```json
    {
      "title": "...",
      "slug": "...",
      "content": "<p>HTML...</p>",
      "excerpt": "...",
-     "status": "draft",
-     "display_date": "2026-04-15T12:00:00.000Z"
+     "status": "published",
+     "display_date": "2026-05-21T12:00:00.000Z"
    }
    ```
 
@@ -44,11 +44,12 @@
 
 3. **GET** `/items/mkt_blog/{id}` and verify:
    - `slug` matches what you submitted (Directus may have overwritten it — PATCH back if so).
-   - `status` is still `draft` (a Flow may have auto-published — PATCH back if unintended).
+   - `status` matches what you submitted. If a Flow demoted `published` → `draft` (or vice versa) against the writer's intent, PATCH back.
 
-## Admin URL Pattern
+## URL Patterns
 
-`{DIRECTUS_URL}/admin/content/mkt_blog/{id}`
+- **Public URL:** `https://blog.zspace.com/{slug}` — what the skill hands back to the writer.
+- **Admin URL:** `{DIRECTUS_URL}/admin/content/mkt_blog/{id}` — for editing in Directus.
 
 ## API Access
 
