@@ -22,10 +22,15 @@ Copy everything between the lines below and paste it into Claude Code. Press Ret
 >    - Mac/Linux: clone to `~/zspace/blog-generation`, skill link at `~/.claude/skills/zspace-blog`.
 >    - Windows: clone to `%USERPROFILE%\zspace\blog-generation`, skill link at `%USERPROFILE%\.claude\skills\zspace-blog`.
 >
-> 3. **Install git if it's missing.** Check with `git --version`. If git is not installed, install it for me — don't ask me to do it.
->    - Mac: run `xcode-select --install`. A dialog will pop up — tell me to click **Install** and accept the license, then wait (~5–10 minutes). When the dialog closes, re-run `git --version` to confirm.
->    - Windows: run `winget install --id Git.Git -e --source winget --accept-source-agreements --accept-package-agreements`. If a UAC prompt appears, tell me to click **Yes**. After install completes, close and reopen the terminal so `PATH` refreshes, then re-run `git --version`.
->    - If the automated install fails (e.g. `winget` not available on older Windows, or the Mac dialog never appears): open <https://git-scm.com/downloads> for me, walk me through the installer, and resume from step 4 once `git --version` works.
+> 3. **Install any missing dependencies — don't ask me to do it.** The skill needs `git`, `python3`, and the Python package `reportlab` (for generating review PDFs). Check each and install whatever's missing:
+>    - **git** — `git --version`.
+>      - Mac: `xcode-select --install` (also brings Python). A dialog pops up — tell me to click **Install** and accept the license, then wait (~5–10 minutes).
+>      - Windows: `winget install --id Git.Git -e --source winget --accept-source-agreements --accept-package-agreements`. If UAC prompts, tell me to click **Yes**, then close and reopen the terminal so `PATH` refreshes.
+>    - **Python** — try `python3 --version`, then `python --version`, then `py --version`. Pick the first that works.
+>      - Mac: usually arrives with the xcode tools above. If still missing, re-run `xcode-select --install`.
+>      - Windows: `winget install --id Python.Python.3.12 -e --source winget --accept-source-agreements --accept-package-agreements`. Accept UAC, reopen the terminal.
+>    - **reportlab** — `<python> -c "import reportlab"`. If it errors, run `<python> -m pip install --user reportlab`.
+>    - If any automated install fails: open <https://git-scm.com/downloads> or <https://www.python.org/downloads/> for me, walk me through the installer, and resume once the missing tool reports a version.
 >
 > 4. **Clone or update the repo** from `https://github.com/jdonnelly-zspace/blog-generation.git` into the install location. If it already exists, `git pull --ff-only` it.
 >
