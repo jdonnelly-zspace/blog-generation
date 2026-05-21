@@ -2,6 +2,8 @@
 
 You need **Claude Code** installed (download from <https://claude.ai/claude-code>) and **two Directus tokens** from JP Donnelly (jdonnelly@zspace.com).
 
+You do **not** need a GitHub account. The skill repo is public — Claude will download it for you.
+
 Once you have both, open Claude Code and paste the prompt below. Claude will set everything up for you — Mac or Windows.
 
 ---
