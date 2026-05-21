@@ -4,9 +4,10 @@ Claude Code workflow for writing and publishing SEO-optimized blogs for zSpace's
 
 ## Quick Start
 
-1. Copy `.env.example` to `.env` and add your personal Directus API token.
-2. Ask Claude to write a blog post: `/blog` or `"write a blog post about [topic]"`.
-3. Claude runs discovery → SEO plan → HTML writing → review PDF → link validation → Directus publish.
+- Writers: see [docs/WRITER_QUICKSTART.md](docs/WRITER_QUICKSTART.md).
+- Admins: see [docs/ADMIN.md](docs/ADMIN.md).
+
+In short: writers run `scripts/install.sh` once, paste tokens into `.env`, and then type `/blog` in Claude Code from any folder.
 
 ## Structure
 
@@ -17,7 +18,7 @@ Claude Code workflow for writing and publishing SEO-optimized blogs for zSpace's
 - `drafts/` — generated HTML, metadata JSON, and review PDFs before publish.
 - `images/` — blog image staging + `images/examples/` (15 reference images).
 
-The Claude skill lives at `~/.claude/skills/zspace-blog/SKILL.md` and loads all three guideline files at the start of every session.
+The Claude skill lives at `.claude/skills/zspace-blog/SKILL.md` in this repo. The installer symlinks it into `~/.claude/skills/zspace-blog` so it loads from any working directory. The skill reads guidelines and `.env` from `~/zspace/blog-generation/` (the canonical clone location).
 
 ## Environment
 

@@ -23,39 +23,46 @@ allowed-tools:
 
 Expert SEO blog writing system for zSpace's marketing team.
 
-All file paths below are **relative to the project root** (the directory containing `README.md`, `guidelines/`, `.env`). The user must be running Claude Code from that directory.
+The skill is installed globally and reads everything from a fixed project root:
+
+```
+PROJECT_ROOT="${HOME}/zspace/blog-generation"
+```
+
+All paths below (`guidelines/...`, `drafts/...`, `.env`) resolve under `PROJECT_ROOT`. The user does **not** need to `cd` into the repo — `/blog` works from any folder. If `${HOME}/zspace/blog-generation` does not exist, tell the user to run `bash <(curl -fsSL https://raw.githubusercontent.com/jdonnelly-zspace/blog-generation/main/scripts/install.sh)` and stop.
 
 ## Pre-flight: Check for Repo Updates
 
-Before anything else, check if the local project is behind `origin/main` so we stay on the same guidelines as the team. Run this once per session:
+Before anything else, check if `${PROJECT_ROOT}` is behind `origin/main` so we stay on the same guidelines as the team. Run this once per session:
 
 ```bash
-if [ -d .git ]; then
-  git fetch --quiet 2>/dev/null || true
-  behind=$(git rev-list --count HEAD..@{u} 2>/dev/null || echo 0)
-  dirty=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
+PROJECT_ROOT="${HOME}/zspace/blog-generation"
+if [ -d "${PROJECT_ROOT}/.git" ]; then
+  git -C "${PROJECT_ROOT}" fetch --quiet 2>/dev/null || true
+  behind=$(git -C "${PROJECT_ROOT}" rev-list --count HEAD..@{u} 2>/dev/null || echo 0)
+  dirty=$(git -C "${PROJECT_ROOT}" status --porcelain 2>/dev/null | wc -l | tr -d ' ')
   echo "behind=$behind dirty=$dirty"
 fi
 ```
 
-- If `behind > 0` AND `dirty = 0`: tell the user "Your local copy is N commits behind origin/main. Pull latest guidelines before writing? (recommended)" and, on approval, run `git pull --ff-only`.
-- If `behind > 0` AND `dirty > 0`: tell the user "Your local copy is N commits behind origin/main, but you have uncommitted changes. I'll skip the auto-pull — please resolve your changes and pull when ready. Continuing with your current version."
+- If `behind > 0` AND `dirty = 0`: tell the user "The blog skill is N commits behind origin/main. Pull latest guidelines before writing? (recommended)" and, on approval, run `git -C "${PROJECT_ROOT}" pull --ff-only`.
+- If `behind > 0` AND `dirty > 0`: tell the user "The blog skill is N commits behind origin/main, but you have uncommitted changes in ${PROJECT_ROOT}. I'll skip the auto-pull — resolve and pull when ready. Continuing with your current version."
 - If `behind = 0` OR the check failed: continue silently.
 
 Degrade gracefully — if `.git` is missing, there's no upstream configured, or any command fails, just continue. Never block blog writing on the update check.
 
 ## Setup
 
-1. Read `.env` to confirm your personal API token is set. If missing, tell the user to copy `.env.example` to `.env` and add their token (see `guidelines/api-users-and-tokens.md`).
+1. Read `${PROJECT_ROOT}/.env` to confirm the user's personal API token is set. If missing or empty, tell the user to open `${PROJECT_ROOT}/.env` and paste the token JP sent them (see `${PROJECT_ROOT}/guidelines/api-users-and-tokens.md`).
 2. Note the active `DIRECTUS_ENV` and confirm with the user which environment to publish to.
 
 ## Load Guidelines
 
-At the start of every session, read these three files — they are the authoritative source:
+At the start of every session, read these three files from `${PROJECT_ROOT}/guidelines/` — they are the authoritative source:
 
-- `guidelines/voice-and-style.md` — persona, tone, canonical URLs
-- `guidelines/writing-rules.md` — SEO, HTML, link validation
-- `guidelines/directus-schema.md` — Directus fields, category IDs
+- `voice-and-style.md` — persona, tone, canonical URLs
+- `writing-rules.md` — SEO, HTML, link validation
+- `directus-schema.md` — Directus fields, category IDs
 
 Follow all rules in these files. They take precedence over any defaults.
 
@@ -105,9 +112,9 @@ After confirmation, produce the blog post following the loaded guidelines:
 6. 3-5 internal + 2-4 external links.
 7. **Use ONLY canonical zSpace URLs** (see Canonical URLs table in `voice-and-style.md`).
 
-Save two files:
-- `drafts/[slug].html` — the HTML content.
-- `drafts/[slug].json` — metadata:
+Save two files under `${PROJECT_ROOT}/drafts/`:
+- `${PROJECT_ROOT}/drafts/[slug].html` — the HTML content.
+- `${PROJECT_ROOT}/drafts/[slug].json` — metadata:
   ```json
   {
     "title": "...",
@@ -125,7 +132,7 @@ Save two files:
 
 Present the full output to the user, then:
 
-**4a. Generate a review PDF** at `drafts/[slug].pdf`:
+**4a. Generate a review PDF** at `${PROJECT_ROOT}/drafts/[slug].pdf`:
 - Letter size, 1" margins, 11pt body, 1.3 line spacing.
 - Header: "zSpace" in brand blue #0066CC 24pt + "BLOG POST — DRAFT FOR REVIEW" label.
 - Gray metadata block with title, slug, excerpt, keywords, category, date, status.
@@ -143,7 +150,7 @@ Then ask: "Ready to publish to Directus as a draft? Or revisions?" Only proceed 
 
 ### PHASE 5: Publish
 
-Use Python to read `.env`, POST to Directus, and link categories. Use `urllib` (no external deps needed).
+Use Python to read `${PROJECT_ROOT}/.env`, POST to Directus, and link categories. Use `urllib` (no external deps needed).
 
 1. **POST** `/items/mkt_blog` with title, slug, content, excerpt, status=`draft`, display_date.
 2. **POST** `/items/mkt_blog_mkt_blog_categories` with `{ mkt_blog_id, mkt_blog_categories_id }`. Category IDs: 1=Immersive Learning, 4=STEM, 5=CTE.
@@ -167,16 +174,17 @@ Blog Post Created
 
 ## Error Handling
 
-- `.env` missing or token empty → guide the user through setup (see `.env.example` and `guidelines/api-users-and-tokens.md`).
+- `${PROJECT_ROOT}` doesn't exist → tell the user to run the installer (see top of this file) and stop.
+- `${PROJECT_ROOT}/.env` missing or token empty → tell the user to open `${PROJECT_ROOT}/.env` and paste the token JP sent them (see `${PROJECT_ROOT}/guidelines/api-users-and-tokens.md`).
 - Directus API error → show the error, suggest fixes.
 - Unknown category ID → create without categories and flag the gap.
 - Pre-flight check fails → continue silently; don't block on it.
 
 ## Quick Reference
 
-- "What categories are available?" → read `guidelines/directus-schema.md`.
-- "Update the guidelines" → edit the appropriate file in `guidelines/` and commit to the repo so the team gets the update.
-- "Show recent drafts" → list files in `drafts/`.
+- "What categories are available?" → read `${PROJECT_ROOT}/guidelines/directus-schema.md`.
+- "Update the guidelines" → edit the appropriate file in `${PROJECT_ROOT}/guidelines/` and commit to the repo so the team gets the update.
+- "Show recent drafts" → list files in `${PROJECT_ROOT}/drafts/`.
 
 <!-- FUTURE: Directus notification flow exists but is inactive (SMTP not configured).
 Flow ID: b93b2f03-e384-4515-8321-5de4b597b49f — reactivate once email transport is set up. -->
