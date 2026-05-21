@@ -1,6 +1,6 @@
 # Writer Quickstart
 
-You need **Claude Code** installed (download from <https://claude.ai/claude-code>) and **two Directus tokens** from JP Donnelly (jdonnelly@zspace.com).
+You need **Claude Code** installed (download from <https://claude.ai/claude-code>) and a **production Directus token** from JP Donnelly (jdonnelly@zspace.com).
 
 You do **not** need a GitHub account. The skill repo is public — Claude will download it for you.
 
@@ -35,7 +35,7 @@ Copy everything between the lines below and paste it into Claude Code. Press Ret
 > 7. **Open `.env` for me to edit:**
 >    - Mac: `open -e <path>` (TextEdit).
 >    - Windows: `notepad <path>`.
->    - Then tell me: "Paste your sandbox token after `DIRECTUS_TOKEN_SANDBOX=` and your production token after `DIRECTUS_TOKEN_PRODUCTION=`. No quotes, no spaces around the `=`. Leave `DIRECTUS_ENV=sandbox` alone. Save and close."
+>    - Then tell me: "Paste your production token after `DIRECTUS_TOKEN_PRODUCTION=`. Leave `DIRECTUS_TOKEN_SANDBOX=` blank. Change the top line from `DIRECTUS_ENV=sandbox` to `DIRECTUS_ENV=production`. No quotes, no spaces around `=`. Save and close."
 >
 > 8. **Confirm success.** Print the three paths (install folder, skill symlink, `.env`) and tell me: "Done. Type `/blog` in Claude Code from any folder to write a blog post."
 >
@@ -61,9 +61,9 @@ To force an update manually, paste this into Claude Code:
 
 > Pull the latest from `~/zspace/blog-generation` (Mac/Linux) or `%USERPROFILE%\zspace\blog-generation` (Windows). Run `git pull --ff-only` there.
 
-## Switching from sandbox to production
+## Sandbox vs. production
 
-Your first few posts should go to **sandbox** (the default). Once you're comfortable, ask JP to walk you through flipping `DIRECTUS_ENV=production` in your `.env` file.
+You're set up for **production** — your posts land as drafts on the live admin site (`admin.zspace.com`) and you flip them to `published` from there. Sandbox is only used when JP is testing tone/style changes; you can ignore it.
 
 ## Questions
 
