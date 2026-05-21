@@ -22,7 +22,10 @@ Copy everything between the lines below and paste it into Claude Code. Press Ret
 >    - Mac/Linux: clone to `~/zspace/blog-generation`, skill link at `~/.claude/skills/zspace-blog`.
 >    - Windows: clone to `%USERPROFILE%\zspace\blog-generation`, skill link at `%USERPROFILE%\.claude\skills\zspace-blog`.
 >
-> 3. **Verify git is installed.** If not, tell me to install it (Mac: `xcode-select --install`; Windows: <https://git-scm.com/download/win>) and stop.
+> 3. **Install git if it's missing.** Check with `git --version`. If git is not installed, install it for me — don't ask me to do it.
+>    - Mac: run `xcode-select --install`. A dialog will pop up — tell me to click **Install** and accept the license, then wait (~5–10 minutes). When the dialog closes, re-run `git --version` to confirm.
+>    - Windows: run `winget install --id Git.Git -e --source winget --accept-source-agreements --accept-package-agreements`. If a UAC prompt appears, tell me to click **Yes**. After install completes, close and reopen the terminal so `PATH` refreshes, then re-run `git --version`.
+>    - If the automated install fails (e.g. `winget` not available on older Windows, or the Mac dialog never appears): open <https://git-scm.com/downloads> for me, walk me through the installer, and resume from step 4 once `git --version` works.
 >
 > 4. **Clone or update the repo** from `https://github.com/jdonnelly-zspace/blog-generation.git` into the install location. If it already exists, `git pull --ff-only` it.
 >
