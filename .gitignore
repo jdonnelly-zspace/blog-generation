@@ -17,3 +17,6 @@ drafts/*.tmp
 
 # Slide deck lives in Google Drive, not the repo
 docs/*.pptx
+
+# Provisioned writer tokens — local-only, never commit
+provisioned-tokens.txt
