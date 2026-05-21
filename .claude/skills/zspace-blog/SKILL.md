@@ -55,6 +55,15 @@ Degrade gracefully — if `.git` is missing, there's no upstream configured, or 
 
 1. Read `${PROJECT_ROOT}/.env` to confirm the user's personal API token is set. If missing or empty, tell the user to open `${PROJECT_ROOT}/.env` and paste the token JP sent them (see `${PROJECT_ROOT}/guidelines/api-users-and-tokens.md`).
 2. Note the active `DIRECTUS_ENV` and confirm with the user which environment to publish to.
+3. **Verify Python + `reportlab`** (needed for Phase 4a PDF generation and Phase 5 publishing). **Install anything missing — never ask the writer to do it.**
+   - Detect a working Python interpreter. Try `python3 --version`, then `python --version`, then `py --version` (Windows). Pick the first that works and use that command for everything else.
+   - **If no Python is found:**
+     - **Mac/Linux:** Run `xcode-select --install` (this also brings Python). Tell the writer to click *Install* in the dialog and wait, then re-check.
+     - **Windows:** Run `winget install --id Python.Python.3.12 -e --source winget --accept-source-agreements --accept-package-agreements`. Tell the writer to click *Yes* on any UAC prompt, then close and reopen the terminal so `PATH` refreshes.
+     - If automated install fails, open <https://www.python.org/downloads/> for the writer, walk them through it, and resume once `python --version` works.
+   - **Verify `reportlab` is importable:** `<python> -c "import reportlab"`. If it errors, install it: `<python> -m pip install --user reportlab`.
+   - On `pip install` failure (network, permissions), surface the error verbatim and try `--break-system-packages` only if the user agrees.
+   - Once both checks pass, **continue silently** — don't re-announce success.
 
 ## Load Guidelines
 
