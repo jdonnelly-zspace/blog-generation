@@ -43,7 +43,7 @@ Copy everything between the lines below and paste it into Claude Code. Press Ret
 > 7. **Open `.env` for me to edit:**
 >    - Mac: `open -e <path>` (TextEdit).
 >    - Windows: `notepad <path>`.
->    - Then tell me: "Paste your production token after `DIRECTUS_TOKEN_PRODUCTION=`. Leave `DIRECTUS_TOKEN_SANDBOX=` blank. Change the top line from `DIRECTUS_ENV=sandbox` to `DIRECTUS_ENV=production`. No quotes, no spaces around `=`. Save and close."
+>    - Then tell me: "Paste your token on the `DIRECTUS_TOKEN_PRODUCTION=` line. No quotes, no spaces around the `=`. Save and close." (The file is pre-configured for production; nothing else to change.)
 >
 > 8. **Confirm success.** Print the three paths (install folder, skill symlink, `.env`) and tell me: "Done. Type `/blog` in Claude Code from any folder to write a blog post."
 >
@@ -71,9 +71,9 @@ To force an update manually, paste this into Claude Code:
 
 > Pull the latest from `~/zspace/blog-generation` (Mac/Linux) or `%USERPROFILE%\zspace\blog-generation` (Windows). Run `git pull --ff-only` there.
 
-## Sandbox vs. production
+## Production only
 
-You're set up for **production** — your posts publish to the live blog at `blog.zspace.com` with today's date. Sandbox is only used when JP is testing tone/style changes; you can ignore it.
+Your `.env` is pre-configured for **production** — posts publish to the live blog at `blog.zspace.com` with today's date. There's no sandbox token to manage. JP runs sandbox separately when testing tone/style changes.
 
 ## Questions
 

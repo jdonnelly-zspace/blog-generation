@@ -22,7 +22,7 @@ The Claude skill lives at `.claude/skills/zspace-blog/SKILL.md` in this repo. Th
 
 ## Environment
 
-`.env` supports multiple environments via `DIRECTUS_ENV=sandbox` or `production`. Add more by adding `DIRECTUS_URL_<NAME>` / `DIRECTUS_TOKEN_<NAME>` pairs. Each team member uses their own personal API token. See `guidelines/api-users-and-tokens.md`.
+`.env` for writers is production-only and ships pre-configured (`DIRECTUS_ENV=production`, `DIRECTUS_URL_PRODUCTION`, and one empty `DIRECTUS_TOKEN_PRODUCTION` line). Writers paste their token and they're done — no env switching. Admins use `.env.admin.example` instead, which adds sandbox URLs and admin tokens for `setup_roles.js`. Each team member uses their own personal API token. See `guidelines/api-users-and-tokens.md`.
 
 ## Directus Essentials
 

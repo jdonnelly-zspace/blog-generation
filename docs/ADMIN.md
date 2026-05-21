@@ -4,19 +4,18 @@ For JP (and any future maintainer) of the zSpace Blog Generation workflow. Write
 
 ## Onboarding a new writer
 
-1. **Create their Directus user + token** (sandbox first, production second):
+1. **Create their Directus user + token (production only):**
    ```bash
    cd ~/zspace/blog-generation
-   node scripts/setup_roles.js --add-user name@zspace.com --policies blog
+   node scripts/setup_roles.js --add-user name@zspace.com --policies blog --env production
    ```
-   The script creates the user under the Blog Writer policy and prints a personal API token. Repeat against the production Directus instance.
+   The script creates the user under the Blog Writer policy and prints a personal API token.
 
-2. **Send the writer two things** (e.g., 1Password or encrypted DM — never plain email/Slack):
-   - Their sandbox token
-   - Their production token
+2. **Send the writer two things** (via 1Password share or another secure channel — never plain email/Slack):
+   - Their **production** token
    - A link to [WRITER_QUICKSTART.md](WRITER_QUICKSTART.md)
 
-3. Confirm the writer can run `/blog` against sandbox before you give them the production token, if you want a staged rollout.
+3. Writers don't get sandbox tokens. Sandbox is admin-only — used when you're testing tone/style or SEO changes before they affect everyone.
 
 ## Listing / disabling writers
 
