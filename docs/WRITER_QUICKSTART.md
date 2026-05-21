@@ -65,7 +65,7 @@ To force an update manually, paste this into Claude Code:
 
 ## Sandbox vs. production
 
-You're set up for **production** — your posts land as drafts on the live admin site (`admin.zspace.com`) and you flip them to `published` from there. Sandbox is only used when JP is testing tone/style changes; you can ignore it.
+You're set up for **production** — your posts publish to the live blog at `blog.zspace.com` with today's date. Sandbox is only used when JP is testing tone/style changes; you can ignore it.
 
 ## Questions
 
