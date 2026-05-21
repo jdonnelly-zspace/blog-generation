@@ -14,3 +14,6 @@ reference/
 # Temp/dev scripts in drafts
 drafts/_*.py
 drafts/*.tmp
+
+# Slide deck lives in Google Drive, not the repo
+docs/*.pptx
