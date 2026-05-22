@@ -75,9 +75,13 @@ At the start of every session, read these three files from `${PROJECT_ROOT}/guid
 
 Follow all rules in these files. They take precedence over any defaults.
 
+## Local-Only Workflow
+
+Drafts under `${PROJECT_ROOT}/drafts/` are local working files. **Do not run `git add`, `git commit`, `git push`, `git checkout -b`, or any branch/remote operation in `${PROJECT_ROOT}` as part of the blog flow.** The skill publishes through the Directus API only. Guideline edits are the one exception, and those require the writer to ask for them explicitly. If the writer asks you to commit, confirm first and never push without explicit approval.
+
 ---
 
-## Workflow — 5 Phases
+## Workflow — 6 Phases
 
 ### PHASE 1: Discovery
 
@@ -121,7 +125,7 @@ After confirmation, produce the blog post following the loaded guidelines:
 6. 3-5 internal + 2-4 external links.
 7. **Use ONLY canonical zSpace URLs** (see Canonical URLs table in `voice-and-style.md`).
 
-Save two files under `${PROJECT_ROOT}/drafts/`:
+Save two files under `${PROJECT_ROOT}/drafts/`. Save the files and stop — do not stage, commit, or push them.
 - `${PROJECT_ROOT}/drafts/[slug].html` — the HTML content.
 - `${PROJECT_ROOT}/drafts/[slug].json` — metadata. Default `status` to `published` and `display_date` to **today** at 12:00 UTC (ISO 8601). Override only if the writer explicitly asked for a draft or a different date:
   ```json
@@ -167,21 +171,51 @@ Use Python to read `${PROJECT_ROOT}/.env`, POST to Directus, and link categories
    - `slug` matches what you submitted. If Directus auto-generated a title-based slug, PATCH it back to the SEO-optimized one.
    - `status` matches what you submitted. If a Flow demoted `published` → `draft`, PATCH back to `published` (unless the writer asked for draft). If a Flow promoted `draft` → `published` and the writer wanted draft, PATCH back to `draft`.
    - Flag any mismatch to the user.
-4. **Report both URLs:**
-   - Public URL: `https://blog.zspace.com/{slug}`
-   - Admin URL: `{DIRECTUS_URL}/admin/content/mkt_blog/{id}`
+4. **Capture both URLs** for the Phase 6 Jira task and the completion summary:
+   - Public URL: `https://blog.zspace.com/{slug}` — this is the link the writer should share.
+   - Directus admin URL: `{DIRECTUS_URL}/admin/content/mkt_blog/{id}` — internal only.
 
-Completion summary:
+Proceed directly to Phase 6 (file the image task) before showing the completion summary.
+
+### PHASE 6: File image task with creative team
+
+Right after a successful publish, automatically create a Jira ticket asking the creative team for a header image. **Do not prompt the writer** — just file it and include the link in the final summary. If Jira fails, the blog is already published; surface the error but don't roll anything back.
+
+Use the Atlassian MCP. If the tool schema isn't loaded, call `ToolSearch` with `select:mcp__ea6c6a90-421c-445c-869d-ea36016341d9__createJiraIssue,mcp__ea6c6a90-421c-445c-869d-ea36016341d9__lookupJiraAccountId` first (the server prefix may vary — search for `createJiraIssue` and `lookupJiraAccountId` if that exact id misses).
+
+**Resolve the writer's email** (used for the Jira reporter and one of the mentions). GET `/users/me` from Directus with the writer's token from `.env`; the response includes `email`. Cache it for the session.
+
+**Assemble the issue:**
+- **cloudId:** `64848c61-aba7-4435-aa3c-4d499b2eaa9b` (zspace.atlassian.net).
+- **projectKey:** `ZW`
+- **issueTypeName:** `Task`
+- **summary:** `Provide image for blog: {title}`
+- **assignee accountId:** `5c475b0481ec9e450cead0f4` (David Cipres, dcipres@zspace.com).
+- **reporter accountId:** look up the writer's email via `lookupJiraAccountId`.
+- **description (ADF):** four paragraphs —
+  1. `An image is needed for this blog: https://blog.zspace.com/{slug}`
+  2. `Upload the .png to the Directus entry: {DIRECTUS_URL}/admin/content/mkt_blog/{id}`
+  3. `Size: 1920px by 1080px`
+  4. `cc: ` followed by ADF `mention` nodes for each of: the writer's email, `jdonnelly@zspace.com`, `jparlier@zspace.com`, `aaustin@zspace.com`. Resolve each via `lookupJiraAccountId`. If any lookup fails, fall back to plain-text emails for the unresolved addresses in that same paragraph and flag the gap to the writer at the end of the run.
+
+**On Jira API failure:** show the error and the assembled summary/description, plus the manual-create URL `https://zspace.atlassian.net/secure/CreateIssue.jspa?pid=12605&issuetype=10100`. Continue to the completion summary; do not block.
+
+### Completion summary
+
+Show this after Phase 6 finishes (or fails gracefully):
+
 ```
-Blog Post Created
-- Title: [title]
-- Directus ID: [id]
-- Status: [published|draft]
-- Display Date: [YYYY-MM-DD]
-- Category: [category]
-- Public URL: https://blog.zspace.com/[slug]
-- Admin URL:  [admin url]
+Blog Post Published
+- Public URL:     https://blog.zspace.com/[slug]    ← share this
+- Title:          [title]
+- Category:       [category]
+- Display Date:   [YYYY-MM-DD]
+- Status:         [published|draft]
+- Directus admin: [admin url]  (internal)
+- Image task:     https://zspace.atlassian.net/browse/[ZW-NNNN]
 ```
+
+If the Jira create failed, replace the `Image task:` line with `Image task:     NOT FILED — see error above; create manually` and keep going.
 
 Then add a one-line nudge so the writer knows they can change the result conversationally:
 
