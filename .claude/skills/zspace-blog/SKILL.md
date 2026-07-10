@@ -90,6 +90,7 @@ Ask the user for:
 - **Takeaways & intent:** what search question this answers; 3-5 key takeaways.
 - **zSpace value & evidence:** which value prop to highlight (offline capability, curriculum alignment, screen-based AR, versatility, accessibility, teacher support, cost-effectiveness); any data, studies, or customer examples.
 - **Linking & category:** specific zSpace pages or external sources to reference; blog category (Immersive Learning, STEM, or CTE); word count if not default 1,500-2,500.
+- **Author:** who should be credited as the author. Show the current author list from `guidelines/directus-schema.md` (names only, not IDs). If the writer doesn't specify, default to the writer themselves if they match an existing author, otherwise ask.
 
 Group questions conversationally — don't re-ask what the user already told you. Skip discovery entirely if the user gave a clear topic + source material up front and confirm a quick plan (Phase 2) instead.
 
@@ -107,6 +108,7 @@ SEO Strategy:
 - Proposed Excerpt: [130-160 chars] (XXX characters)
 
 Content Plan:
+- Author: [name] (ID [N])
 - Topic summary, key takeaways, zSpace value, data, customer examples,
   internal/external links, category, display date
 ```
@@ -136,6 +138,7 @@ Save two files under `${PROJECT_ROOT}/drafts/`. Save the files and stop — do n
     "primary_keyword": "...",
     "secondary_keywords": ["..."],
     "category_id": 1,
+    "author_id": 5,
     "display_date": "2026-05-21T12:00:00.000Z",
     "status": "published"
   }
@@ -165,7 +168,7 @@ Then ask: "Ready to publish to Directus as **published** with today's date? Or r
 
 Use Python to read `${PROJECT_ROOT}/.env`, POST to Directus, and link categories. Use `urllib` (no external deps needed).
 
-1. **POST** `/items/mkt_blog` with title, slug, content, excerpt, status=`published` (the default — use `draft` only if the writer asked), display_date=today (use the writer's date if they specified one).
+1. **POST** `/items/mkt_blog` with title, slug, content, excerpt, status=`published` (the default — use `draft` only if the writer asked), display_date=today (use the writer's date if they specified one), and `author` (integer FK to `mkt_blog_authors`). Use the `author_id` from the saved `[slug].json` metadata. If the writer didn't specify an author during Discovery, omit the field.
 2. **POST** `/items/mkt_blog_mkt_blog_categories` with `{ mkt_blog_id, mkt_blog_categories_id }`. Category IDs: 1=Immersive Learning, 4=STEM, 5=CTE.
 3. **Verify Directus did not rewrite the slug or status.** GET the record back and check:
    - `slug` matches what you submitted. If Directus auto-generated a title-based slug, PATCH it back to the SEO-optimized one.
@@ -208,6 +211,7 @@ Show this after Phase 6 finishes (or fails gracefully):
 Blog Post Published
 - Public URL:     https://blog.zspace.com/[slug]    ← share this
 - Title:          [title]
+- Author:         [author name]
 - Category:       [category]
 - Display Date:   [YYYY-MM-DD]
 - Status:         [published|draft]
