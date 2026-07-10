@@ -90,7 +90,7 @@ Ask the user for:
 - **Takeaways & intent:** what search question this answers; 3-5 key takeaways.
 - **zSpace value & evidence:** which value prop to highlight (offline capability, curriculum alignment, screen-based AR, versatility, accessibility, teacher support, cost-effectiveness); any data, studies, or customer examples.
 - **Linking & category:** specific zSpace pages or external sources to reference; blog category (Immersive Learning, STEM, or CTE); word count if not default 1,500-2,500.
-- **Author:** who should be credited as the author. Show the current author list from `guidelines/directus-schema.md` (names only, not IDs). If the writer doesn't specify, default to the writer themselves if they match an existing author, otherwise ask.
+- **Author (optional):** who should be credited. Show the current author list from `guidelines/directus-schema.md` (names only, not IDs). If the writer doesn't specify, default to the writer themselves if they match an existing author. If no match or the writer says "none" / "skip" / "not sure", proceed without an author — the post will publish without a byline and one can be assigned later in Directus.
 
 Group questions conversationally — don't re-ask what the user already told you. Skip discovery entirely if the user gave a clear topic + source material up front and confirm a quick plan (Phase 2) instead.
 
