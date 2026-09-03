@@ -23,7 +23,7 @@ The installer clones this repo to `~/zspace/blog-generation` and symlinks the sk
 
 ## Directus essentials (for context)
 
-- Collection: `mkt_blog`. Content field: `content`. Date field: `display_date`. No `author` field — each writer's token maps to their Directus user via `user_created`.
+- Collection: `mkt_blog`. Content field: `content`. Date field: `display_date`. Byline: optional `author` integer FK → `mkt_blog_authors.id`. The skill asks who to credit during discovery; skip it and the post publishes without a byline. Separately, each writer's token maps to their Directus user via `user_created`.
 - Categories: M2M via `mkt_blog_mkt_blog_categories`. IDs: 1=Immersive Learning, 4=STEM, 5=CTE.
 - Directus may auto-rewrite the slug or status. The skill always GETs the record after create and PATCHes back if needed.
 

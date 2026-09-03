@@ -12,7 +12,10 @@
 | `display_date` | dateTime | no | Display date for the post. |
 | `status` | string | yes | `draft` or `published`. |
 | `featured_image` | uuid (file) | no | Directus file UUID. CDN URL: `https://cdn.zspace.com/assets/{uuid}`. |
-| `user_created` | string | auto | Tracks authorship (no separate `author` field). Each team member's personal API token means this reflects the actual person who published the post. |
+| `author` | integer (FK) | no | FK → `mkt_blog_authors.id`. M2O relation: each blog has one author. |
+| `user_created` | string | auto | Tracks who published the post via API token. |
+
+**Author:** M2O relation to `mkt_blog_authors`. Set by passing the author's ID in the POST body.
 
 **Categories:** M2M via junction table `mkt_blog_mkt_blog_categories`. Must be linked via a separate POST **after** creating the blog post.
 
@@ -25,7 +28,7 @@
 
 ## Creating a Blog Post
 
-1. **POST** `/items/mkt_blog` (no categories in body). Default `status` to `published` and `display_date` to today; only use `draft` or a future date when the writer asks:
+1. **POST** `/items/mkt_blog` (no categories in body). Default `status` to `published` and `display_date` to today; only use `draft` or a future date when the writer asks. Include `author` if known:
    ```json
    {
      "title": "...",
@@ -33,7 +36,8 @@
      "content": "<p>HTML...</p>",
      "excerpt": "...",
      "status": "published",
-     "display_date": "2026-05-21T12:00:00.000Z"
+     "display_date": "2026-05-21T12:00:00.000Z",
+     "author": 5
    }
    ```
 
@@ -45,6 +49,28 @@
 3. **GET** `/items/mkt_blog/{id}` and verify:
    - `slug` matches what you submitted (Directus may have overwritten it — PATCH back if so).
    - `status` matches what you submitted. If a Flow demoted `published` → `draft` (or vice versa) against the writer's intent, PATCH back.
+
+## Collection: `mkt_blog_authors`
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| `id` | integer (PK) | auto | Auto-increment. |
+| `name` | string | yes | Full display name (e.g. "Sheena Shoemaker"). |
+| `slug` | string | yes | URL-safe slug for author pages (e.g. "sheena-shoemaker"). Unique. |
+| `title` | string | yes | Job title (e.g. "Director of CTE"). |
+| `short_bio` | text | yes | Author bio for byline display. |
+| `headshot` | uuid (file) | yes | Directus file ref for author photo. |
+| `status` | string | no | `published`, `draft`, or `archived`. Default: `published`. |
+
+**Author IDs (sandbox4 / initial set):**
+| ID | Name |
+|---|---|
+| 2 | Brenda Berube, Ed.D., H (ASCP) |
+| 3 | Joseph Parlier, Ed.D. |
+| 4 | Nic Finelli |
+| 5 | Sheena Shoemaker |
+| 6 | Stefan Singer |
+| 7 | Leslie Lewandowski |
 
 ## URL Patterns
 

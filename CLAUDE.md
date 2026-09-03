@@ -26,7 +26,7 @@ The Claude skill lives at `.claude/skills/zspace-blog/SKILL.md` in this repo. Th
 
 ## Directus Essentials
 
-- Collection: `mkt_blog`. Content field: `content`. Date field: `display_date`. No `author` field — each person's token maps to their Directus user, providing an audit trail via `user_created`.
+- Collection: `mkt_blog`. Content field: `content`. Date field: `display_date`. Byline: optional `author` integer FK → `mkt_blog_authors.id` (M2O). Pass it in the create POST, or omit it and assign the byline later in Directus. Separately, each person's token maps to their Directus user, providing an audit trail via `user_created`.
 - Categories: M2M via junction table `mkt_blog_mkt_blog_categories`. Link as a separate POST after creating the post. IDs: 1=Immersive Learning, 4=STEM, 5=CTE.
 - **Directus may auto-rewrite the slug from the title and may auto-change status.** Always GET the record after create and PATCH back if needed. See `guidelines/directus-schema.md`.
 

@@ -118,6 +118,7 @@ const POLICY_DEFS = {
       { collection: 'mkt_blog',                          action: 'update' },
       { collection: 'mkt_blog_mkt_blog_categories',      action: 'create' },
       { collection: 'mkt_blog_mkt_blog_categories',      action: 'read'   },
+      { collection: 'mkt_blog_authors',                   action: 'read'   },
     ],
   },
 };
