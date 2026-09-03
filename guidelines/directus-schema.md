@@ -62,7 +62,7 @@
 | `headshot` | uuid (file) | yes | Directus file ref for author photo. |
 | `status` | string | no | `published`, `draft`, or `archived`. Default: `published`. |
 
-**Author IDs (sandbox4 / initial set):**
+**Author IDs** — verified against production (`admin.zspace.com`) 2026-09-03; sandbox4 matches. All six are in active use on live posts:
 | ID | Name |
 |---|---|
 | 2 | Brenda Berube, Ed.D., H (ASCP) |
