@@ -49,10 +49,10 @@ If Mermaid paste is unavailable or a diagram will not generate, the fallback is
 to render the `.mmd` to SVG or PNG and place that as an image — accurate, but
 flat and not editable.
 
-**Version note:** Lucid targets Mermaid **11.14**. These files were validated
-against **10.9.1** and use only long-stable syntax (`flowchart`,
-`sequenceDiagram`, `erDiagram`, subgraphs, `<br/>` labels), so they should be
-fine — but that specific pairing is untested.
+**Version note:** Lucid targets Mermaid **11.14**. All six now render clean
+under Mermaid 11 via `@mermaid-js/mermaid-cli`. Worth knowing that v10 and v11
+lay diagrams out differently — `05` measured 1.02 under 10.9.1 and 0.32 under
+11 — so measure against 11 or the numbers mislead.
 
 Two things worth doing once disconnected:
 
@@ -66,17 +66,23 @@ Both need real shapes, so they come after **Disconnect from code**.
 
 ### Canvas sizes
 
-Roughly what each one needs, from the Mermaid render. Lucid re-runs its own
-layout on import, so treat these as proportions rather than exact figures.
+Measured with Mermaid 11, the major version Lucid targets. Lucid re-runs its
+own layout, so treat these as proportions rather than exact figures.
 
-| File | Approx. | Shape |
-|---|---|---|
-| `01` | 1785 x 1066 | landscape |
-| `02` | 3721 x 575 | wide band — it is a swimlane |
-| `03` | 1726 x 1217 | portrait-ish, grows with participants |
-| `04` | 1004 x 752 | compact |
-| `05` | 1398 x 1372 | square |
-| `06` | 739 x 1071 | portrait |
+| File | Approx. | Ratio | Shape |
+|---|---|---|---|
+| `01` | 1979 x 1383 | 1.43 | landscape |
+| `02` | 3993 x 823 | 4.85 | wide band — it is a swimlane |
+| `03` | 1726 x 1141 | 1.51 | landscape, grows with participants |
+| `04` | 1607 x 1201 | 1.34 | compact |
+| `05` | 741 x 2342 | 0.32 | tall portrait |
+| `06` | 839 x 1462 | 0.57 | portrait |
+
+Regenerate these with the `lucid-diagrams` skill:
+
+```bash
+python3 ~/.claude/skills/lucid-diagrams/scripts/measure.py diagrams/
+```
 
 ### If labels look wrong
 
