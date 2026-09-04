@@ -20,3 +20,6 @@ docs/*.pptx
 
 # Provisioned writer tokens — local-only, never commit
 provisioned-tokens.txt
+
+# Directus role-restore snapshot — contains user IDs/emails, never commit
+scripts/archived_writers_roles.json
