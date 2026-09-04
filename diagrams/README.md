@@ -22,17 +22,47 @@ a writer wants to know what happens after they type `/blog`.
 
 They render as-is in GitHub, or in anything that speaks Mermaid.
 
-For Lucidchart: open a document, **Insert → Diagram as code**, enable the
-**Mermaid** shape library, and paste one file. Lucid renders a live preview and
-inserts real, editable Lucid shapes — not an image.
+### Lucidchart
 
-Two things worth doing after import:
+**There is no `.mmd` file import.** Lucid takes Mermaid by paste, not by file:
+
+1. Open a Lucidchart document.
+2. Click the **Diagram as code** icon in the far-left Primary Toolbar.
+3. **+ New Mermaid diagram**.
+4. Paste the contents of one `.mmd` file and click **Generate**. The diagram
+   appears on the canvas and re-renders as you edit the code.
+
+What you get is a **code-linked object**, not loose shapes. It stays bound to
+the Mermaid source, so editing the code updates the diagram — but you cannot
+move or restyle individual shapes.
+
+To get native, shape-by-shape editable Lucid shapes, use **Disconnect from
+code** in the object's drop-down. That is the step that turns it into ordinary
+Lucid shapes you can restyle, rearrange, and attach hotspots to.
+
+The trade-off: disconnecting is one-way. Once disconnected, the diagram no
+longer tracks the `.mmd`, so later changes mean re-pasting and restyling.
+Keep it connected while the content is still moving; disconnect when you are
+ready to style for an audience.
+
+If Mermaid paste is unavailable or a diagram will not generate, the fallback is
+to render the `.mmd` to SVG or PNG and place that as an image — accurate, but
+flat and not editable.
+
+**Version note:** Lucid targets Mermaid **11.14**. These files were validated
+against **10.9.1** and use only long-stable syntax (`flowchart`,
+`sequenceDiagram`, `erDiagram`, subgraphs, `<br/>` labels), so they should be
+fine — but that specific pairing is untested.
+
+Two things worth doing once disconnected:
 
 - Rebuild `02` as a **cross-functional flowchart**. Its three subgraphs are
   already laid out left-to-right, which is the shape Lucid's swimlane
   container expects — the lanes become rows and the phases run along them.
 - Add **hotspots** on shapes that map to real files, linking to their GitHub
   paths, so a reader can click `SKILL.md` and land on the actual file.
+
+Both need real shapes, so they come after **Disconnect from code**.
 
 ### Canvas sizes
 
@@ -59,8 +89,8 @@ unusable — `06` rendered as a 4367 x 252 ribbon. Orientation and shorter
 labels fixed it. Subgraph `direction` overrides were tested and made no
 difference, so none are used.
 
-Mermaid import is one-way. Lucid will not push edits back into these files, so
-when the workflow changes, edit the `.mmd`, re-import, and restyle.
+Lucid never pushes edits back into these files. When the workflow changes,
+edit the `.mmd` and re-paste.
 
 ## Keeping them true
 
