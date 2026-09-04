@@ -1,41 +1,36 @@
-flowchart LR
+flowchart TB
   subgraph GH["GitHub — single source of truth"]
-    REPO["jdonnelly-zspace/blog-generation — public repo"]
-    SKILL[".claude/skills/zspace-blog/SKILL.md — the 6-phase workflow"]
-    GUIDE["guidelines/ — voice-and-style, writing-rules, directus-schema, api-users-and-tokens"]
-    SCRIPTS["scripts/ — install.sh, update.sh, setup_roles.js"]
+    REPO["blog-generation<br/>public repo"]
+    SKILL["SKILL.md<br/>the 6-phase workflow"]
+    GUIDE["guidelines/<br/>voice, writing rules, schema, tokens"]
+    SCRIPTS["scripts/<br/>install, update, setup_roles"]
   end
 
   subgraph LOCAL["Writer's machine"]
-    CLONE["~/zspace/blog-generation — git clone"]
-    LINK["~/.claude/skills/zspace-blog — symlink, makes /blog global"]
-    ENV[".env — DIRECTUS_ENV, URL, personal token. gitignored"]
-    DRAFTS["drafts/ — slug.html, slug.json, slug.pdf. Local only, never committed"]
-    CC["Claude Code — runs the skill"]
-    PY["Python + reportlab — review PDF"]
+    CLONE["~/zspace/blog-generation<br/>git clone"]
+    LINK["~/.claude/skills/zspace-blog<br/>symlink — makes /blog global"]
+    ENV[".env<br/>personal token, gitignored"]
+    CC["Claude Code<br/>runs the skill"]
+    PY["Python + reportlab<br/>review PDF"]
+    DRAFTS["drafts/<br/>html, json, pdf — local only"]
   end
 
   subgraph EXT["External systems"]
-    DIR["Directus CMS — admin.zspace.com"]
-    BLOG["blog.zspace.com — public output"]
-    JIRA["Jira ZW project — image request task"]
-    CHROME["Claude in Chrome MCP — real-browser link checks"]
-    ZS["zspace.com — Angular SPA, link targets"]
+    DIR["Directus CMS<br/>admin.zspace.com"]
+    CHROME["Claude in Chrome MCP<br/>real-browser link checks"]
+    ZS["zspace.com<br/>Angular SPA — link targets"]
+    JIRA["Jira ZW<br/>image request task"]
+    BLOG["blog.zspace.com<br/>public output"]
   end
 
-  REPO --> CLONE
-  SKILL --> CLONE
-  GUIDE --> CLONE
-  SCRIPTS --> CLONE
-  CLONE --> LINK
-  LINK --> CC
+  GH ==>|"clone once, pull thereafter"| CLONE
+  CLONE --> LINK --> CC
   ENV --> CC
-  CLONE -. "pre-flight: git fetch, offer ff-only pull" .-> CC
+  CLONE -. "pre-flight: fetch, offer ff-only pull" .-> CC
+  CC --> PY --> DRAFTS
   CC --> DRAFTS
-  CC --> PY
-  PY --> DRAFTS
-  CC -->|"REST: POST, GET, PATCH with Bearer token"| DIR
-  CC -->|"MCP: navigate and verify"| CHROME
+  CC -->|"REST — POST, GET, PATCH"| DIR
+  CC -->|"MCP — navigate and verify"| CHROME
   CHROME --> ZS
-  CC -->|"MCP: createJiraIssue, lookupJiraAccountId"| JIRA
+  CC -->|"MCP — createJiraIssue"| JIRA
   DIR --> BLOG

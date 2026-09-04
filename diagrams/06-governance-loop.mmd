@@ -1,15 +1,15 @@
-flowchart LR
-  A["Team learns something — new canonical URL, tone change, new author, new category"] --> B["Admin edits guidelines/ or SKILL.md in the repo"]
+flowchart TB
+  A["Team learns something<br/>new canonical URL, tone change, new author"] --> B["Admin edits guidelines/ or SKILL.md"]
   B --> C["git commit and push to origin/main"]
-  C --> D["No redeploy, no rebuild — the repo is the product"]
+  C --> D["No redeploy, no rebuild<br/>the repo is the product"]
   D --> E["Next writer types /blog"]
-  E --> F["Pre-flight: git fetch, count commits behind, check for local changes"]
+  E --> F["Pre-flight: git fetch, count commits behind,<br/>check for local changes"]
   F --> G{"Behind origin/main?"}
   G -->|"no"| J["Continue silently"]
-  G -->|"yes, working tree clean"| H["Offer fast-forward pull, writer approves"]
-  G -->|"yes, but local edits present"| I["Skip auto-pull, warn, continue on current version"]
+  G -->|"yes, tree clean"| H["Offer fast-forward pull,<br/>writer approves"]
+  G -->|"yes, local edits"| I["Skip auto-pull, warn,<br/>continue on current version"]
   H --> K["Skill loads the updated guidelines for this run"]
   I --> K
   J --> K
-  K --> L["Every writer converges on the same voice, SEO rules, and schema"]
+  K --> L["Every writer converges on the same<br/>voice, SEO rules, and schema"]
   L --> A
