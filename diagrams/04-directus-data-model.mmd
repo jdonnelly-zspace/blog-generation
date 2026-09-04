@@ -1,0 +1,47 @@
+erDiagram
+    mkt_blog {
+        integer id PK
+        string title "45-60 chars"
+        string slug "may be auto-rewritten on create"
+        text content "full blog HTML"
+        text excerpt "130-160 chars, ASCII"
+        dateTime display_date
+        string status "draft or published"
+        uuid featured_image FK "added later by creative via Jira task"
+        integer author FK "nullable"
+        string user_created "audit: which token published"
+    }
+    mkt_blog_authors {
+        integer id PK
+        string name
+        string slug
+        string title "job title"
+        text short_bio
+        uuid headshot FK
+        string status
+    }
+    mkt_blog_categories {
+        integer id PK
+        string name "1 Immersive Learning, 4 STEM, 5 CTE"
+    }
+    mkt_blog_mkt_blog_categories {
+        integer id PK
+        integer mkt_blog_id FK
+        integer mkt_blog_categories_id FK
+    }
+    directus_users {
+        uuid id PK
+        string email
+        string token "personal, one per writer"
+        uuid role FK "API Tools User"
+    }
+    directus_policies {
+        uuid id PK
+        string name "Blog Writer"
+    }
+
+    mkt_blog_authors ||--o{ mkt_blog : "writes byline for"
+    mkt_blog ||--o{ mkt_blog_mkt_blog_categories : "linked via"
+    mkt_blog_categories ||--o{ mkt_blog_mkt_blog_categories : "linked via"
+    directus_users ||--o{ mkt_blog : "user_created audit trail"
+    directus_users }o--|| directus_policies : "granted create, read, update"

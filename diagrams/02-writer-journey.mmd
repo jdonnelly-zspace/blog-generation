@@ -1,0 +1,42 @@
+flowchart TB
+  subgraph W["Writer"]
+    W1["Types /blog in Claude Code, any folder"]
+    W2["Answers discovery: topic, keyword, takeaways, value prop, category, author"]
+    W3["Approves or edits the SEO plan"]
+    W4["Reads the review PDF"]
+    W5["Approves publish"]
+    W6["Shares blog.zspace.com URL"]
+  end
+
+  subgraph C["Claude Code — zspace-blog skill"]
+    P0["Pre-flight: repo update check, .env token, Python + reportlab"]
+    P0b["Loads guidelines: voice, writing rules, schema"]
+    P1["Phase 1 — Discovery questions"]
+    P2["Phase 2 — Content plan: title, slug, excerpt, keywords, author, category"]
+    P3["Phase 3 — Write 1500-2500 word HTML, save slug.html + slug.json"]
+    P4a["Phase 4a — Generate branded review PDF"]
+    P4b["Phase 4b — Validate every link"]
+    P5["Phase 5 — Publish to Directus, link category, verify slug and status"]
+    P6["Phase 6 — File Jira image task automatically"]
+    SUM["Completion summary: public URL, admin URL, Jira ticket"]
+  end
+
+  subgraph X["Systems"]
+    D["Directus mkt_blog"]
+    CH["Chrome MCP — SPA 404 detection"]
+    J["Jira ZW — assigned to creative"]
+    B["blog.zspace.com"]
+  end
+
+  W1 --> P0 --> P0b --> P1 --> W2 --> P2 --> W3
+  W3 -->|"revise"| P2
+  W3 -->|"approved"| P3 --> P4a --> W4
+  P3 --> P4b --> CH
+  CH -->|"broken link found"| P4b
+  P4b -->|"all links good"| W5
+  W4 --> W5
+  W5 -->|"approved"| P5 --> D
+  P5 --> P6 --> J
+  P6 --> SUM --> W6
+  D --> B
+  W6 -->|"change to draft or reschedule date"| P5

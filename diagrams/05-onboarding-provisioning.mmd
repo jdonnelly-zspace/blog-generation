@@ -1,0 +1,17 @@
+flowchart TB
+  A["New writer joins the team"] --> B["Admin runs: node scripts/setup_roles.js --add-user name@zspace.com --policies blog --env production"]
+  B --> C{"Directus user already exists?"}
+  C -->|"yes"| D["Attach Blog Writer policy if missing, keep existing token"]
+  C -->|"no"| E["Create user under API Tools User role, generate zblog-api token"]
+  E --> F["Attach Blog Writer policy: create, read, update on mkt_blog; create, read on category junction; read on authors; no delete"]
+  D --> G["Script prints the personal token"]
+  F --> G
+  G --> H["Admin sends token plus WRITER_QUICKSTART link via 1Password, never email or Slack"]
+  H --> I["Writer runs scripts/install.sh or pastes the setup prompt into Claude Code"]
+  I --> J["Installer checks Claude Code, git, Python, reportlab and installs what is missing"]
+  J --> K["Clone repo to ~/zspace/blog-generation"]
+  K --> L["Symlink skill into ~/.claude/skills/zspace-blog so /blog works anywhere"]
+  L --> M["Copy .env.example to .env and open it"]
+  M --> N["Writer pastes token on DIRECTUS_TOKEN_PRODUCTION line"]
+  N --> O["Writer types /blog — ready"]
+  P["Writer leaves the team"] --> Q["Admin disables the Directus user, revoking the token"]

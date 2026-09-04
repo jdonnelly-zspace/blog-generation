@@ -1,0 +1,30 @@
+sequenceDiagram
+    autonumber
+    actor Writer
+    participant Skill as Claude Code skill
+    participant Directus as Directus API
+    participant Jira as Jira ZW
+    participant Blog as blog.zspace.com
+
+    Writer->>Skill: Approve publish
+    Skill->>Skill: Read .env for URL and personal token
+    Skill->>Directus: POST /items/mkt_blog with title, slug, content, excerpt, status, display_date, author
+    Directus-->>Skill: 200 with new post id
+    Skill->>Directus: POST /items/mkt_blog_mkt_blog_categories with post id and category id
+    Directus-->>Skill: 200 link created
+    Skill->>Directus: GET /items/mkt_blog/{id} to verify
+    Directus-->>Skill: Record — slug and status may have been rewritten by a Flow
+    alt slug or status was rewritten
+        Skill->>Directus: PATCH /items/mkt_blog/{id} to restore intended values
+        Directus-->>Skill: 200 corrected
+        Skill->>Writer: Flag the mismatch
+    end
+    Skill->>Directus: GET /users/me to resolve writer email
+    Directus-->>Skill: email for Jira reporter and mention
+    Skill->>Jira: lookupJiraAccountId for writer, JP, Joe, Aaron
+    Jira-->>Skill: accountIds
+    Skill->>Jira: createJiraIssue — Provide image for blog, assigned to David Cipres, 1920x1080
+    Jira-->>Skill: ZW-NNNN
+    Note over Skill,Jira: If Jira fails the blog stays published — surface error, do not roll back
+    Skill->>Writer: Summary with public URL, admin URL, Jira link
+    Writer->>Blog: Share https://blog.zspace.com/{slug}
